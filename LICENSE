@@ -1,0 +1,136 @@
+MIT License
+
+Copyright (c) 2024 BurpLite Contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+---
+
+DISCLAIMER AND TERMS OF USE
+
+This software ("BurpLite") is provided for educational and authorized security 
+testing purposes only.
+
+By using this software, you agree to the following terms:
+
+1. AUTHORIZED USE ONLY
+   You may only use this software to test systems, applications, and networks 
+   that you own or have explicit written permission to test. Unauthorized 
+   access to computer systems is illegal under various laws including but not 
+   limited to:
+   - Computer Fraud and Abuse Act (CFAA) in the United States
+   - Computer Misuse Act in the United Kingdom
+   - Similar laws in other jurisdictions
+
+2. NO WARRANTY
+   This software is provided "as is" without warranty of any kind. The authors 
+   and contributors are not responsible for any damages, legal issues, or 
+   consequences arising from the use or misuse of this software.
+
+3. USER RESPONSIBILITY
+   - You are solely responsible for your actions when using this software
+   - You must comply with all applicable laws and regulations
+   - You must respect the privacy and security of others
+   - You must obtain proper authorization before testing any systems
+
+4. ETHICAL USE
+   This software should be used ethically and responsibly:
+   - Only test systems you are authorized to test
+   - Do not cause harm or disruption to services
+   - Respect rate limits and server resources
+   - Report vulnerabilities responsibly to affected parties
+   - Do not use for malicious purposes
+
+5. LIMITATION OF LIABILITY
+   The authors and contributors shall not be liable for:
+   - Any misuse of this software
+   - Any legal consequences arising from unauthorized use
+   - Any damages to systems or data
+   - Any violations of laws or regulations by users
+   - Any loss of data or service disruptions
+
+6. NO ENDORSEMENT
+   The inclusion of example URLs or testing sites does not constitute 
+   endorsement of testing those sites without permission. Always obtain 
+   explicit authorization before testing.
+
+7. COMPLIANCE
+   Users must comply with:
+   - All applicable local, state, national, and international laws
+   - Terms of service of tested websites and applications
+   - Network policies and acceptable use policies
+   - Industry standards and best practices for security testing
+
+8. INDEMNIFICATION
+   By using this software, you agree to indemnify and hold harmless the 
+   authors and contributors from any claims, damages, or legal actions 
+   arising from your use of the software.
+
+---
+
+RECOMMENDED PRACTICES
+
+For safe and ethical use of this software:
+
+1. **Get Written Permission**
+   - Always obtain written authorization before testing
+   - Define scope and boundaries clearly
+   - Document all testing activities
+
+2. **Use Test Environments**
+   - Test on your own systems first
+   - Use designated testing platforms
+   - Avoid production systems unless authorized
+
+3. **Be Respectful**
+   - Don't overwhelm servers with requests
+   - Use appropriate delays between requests
+   - Stop testing if issues arise
+
+4. **Report Responsibly**
+   - Report vulnerabilities to the appropriate parties
+   - Allow reasonable time for fixes
+   - Don't publicly disclose vulnerabilities prematurely
+
+5. **Stay Legal**
+   - Know the laws in your jurisdiction
+   - Understand the difference between authorized and unauthorized testing
+   - When in doubt, don't test
+
+---
+
+SAFE TESTING RESOURCES
+
+The following sites are explicitly designed for security testing practice:
+- httpbin.org (HTTP request/response testing)
+- reqres.in (Fake REST API)
+- jsonplaceholder.typicode.com (Fake API)
+- OWASP WebGoat (Learning platform)
+- DVWA (Damn Vulnerable Web Application)
+- HackTheBox (Authorized penetration testing)
+- TryHackMe (Security training platform)
+
+Always verify terms of service before testing any platform.
+
+---
+
+By downloading, installing, or using BurpLite, you acknowledge that you have 
+read, understood, and agree to be bound by these terms.
+
+Last Updated: 2024

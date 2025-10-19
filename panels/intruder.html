@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intruder - BurpLite</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .content-wrapper {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .config-panel {
+            width: 400px;
+            background: white;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .results-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: #f8f8f8;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 13px;
+            font-family: 'Courier New', monospace;
+            box-sizing: border-box;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .select-control {
+            padding: 10px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 13px;
+            background: white;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #5568d3;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover:not(:disabled) {
+            background: #e53e3e;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .help-text {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .results-toolbar {
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .results-stats {
+            font-size: 13px;
+            color: #666;
+        }
+
+        .results-table {
+            flex: 1;
+            overflow-y: auto;
+            background: white;
+            margin: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background: #f8f8f8;
+            z-index: 10;
+        }
+
+        th {
+            padding: 12px 15px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        td {
+            padding: 12px 15px;
+            font-size: 13px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        tbody tr:hover {
+            background: #f8f8f8;
+        }
+
+        .status-cell {
+            font-weight: 600;
+        }
+
+        .status-200 { color: #10b981; }
+        .status-300 { color: #f59e0b; }
+        .status-400 { color: #ef4444; }
+        .status-500 { color: #dc2626; }
+
+        .payload-cell {
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            max-width: 300px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>⚡ Intruder</h1>
+    </div>
+
+    <div class="content-wrapper">
+        <div class="config-panel">
+            <div class="form-group">
+                <label class="form-label">Target URL</label>
+                <input type="text" id="targetUrl" class="form-control" placeholder="https://api.example.com/login">
+                <div class="help-text">The endpoint to attack</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Attack Type</label>
+                <select id="attackType" class="select-control">
+                    <option value="sniper">Sniper - Single position, iterate payloads</option>
+                    <option value="battering">Battering Ram - Same payload in all positions</option>
+                    <option value="pitchfork">Pitchfork - Multiple positions, parallel iteration</option>
+                </select>
+                <div class="help-text">Determines how payloads are used</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Request Template</label>
+                <textarea id="payloadTemplate" class="form-control" rows="6" placeholder='{"username":"§admin§","password":"§pass§"}'></textarea>
+                <div class="help-text">Use §markers§ for payload insertion points</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Payloads (one per line)</label>
+                <textarea id="payloads" class="form-control" rows="8" placeholder="admin&#10;user&#10;test&#10;root"></textarea>
+                <div class="help-text">Each line will be tested as a payload</div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Delay (ms)</label>
+                <input type="number" id="delay" class="form-control" value="100" min="0" max="5000">
+                <div class="help-text">Delay between requests</div>
+            </div>
+
+            <button id="startAttack" class="btn btn-primary">🚀 Start Attack</button>
+            <button id="stopAttack" class="btn btn-danger" disabled>⏹️ Stop Attack</button>
+        </div>
+
+        <div class="results-panel">
+            <div class="results-toolbar">
+                <div class="results-stats" id="stats">Ready to attack</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar"></div>
+                </div>
+                <button class="btn btn-secondary" id="exportResults" style="width: auto; padding: 8px 16px; margin: 0;">📥 Export</button>
+            </div>
+
+            <div class="results-table">
+                <table id="resultsTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Payload</th>
+                            <th>Status</th>
+                            <th>Length</th>
+                            <th>Time (ms)</th>
+                            <th>Response</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody"></tbody>
+                </table>
+
+                <div class="empty-state" id="emptyState">
+                    <div style="font-size: 64px; margin-bottom: 20px;">⚡</div>
+                    <h3>Ready to Launch Attack</h3>
+                    <p>Configure your attack parameters and click "Start Attack"</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="intruder.js"></script>
+</body>
+</html>

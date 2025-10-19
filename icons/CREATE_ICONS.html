@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Create BurpLite Icons</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        canvas {
+            border: 2px solid #333;
+            margin: 10px;
+            cursor: pointer;
+        }
+        button {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .instructions {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎨 BurpLite Icon Generator</h1>
+        
+        <div class="instructions">
+            <strong>Instructions:</strong>
+            <ol>
+                <li>Click "Generate Icons" button below</li>
+                <li>Right-click each icon and "Save Image As..."</li>
+                <li>Save as: icon16.png, icon48.png, icon128.png</li>
+                <li>Save all files in the <code>icons</code> folder</li>
+                <li>Reload the extension in Chrome</li>
+            </ol>
+        </div>
+
+        <button onclick="generateIcons()">🎨 Generate Icons</button>
+        <button onclick="downloadAll()">💾 Download All Icons</button>
+
+        <div id="iconContainer"></div>
+    </div>
+
+    <script>
+        function drawIcon(canvas, size) {
+            const ctx = canvas.getContext('2d');
+            
+            // Background gradient
+            const gradient = ctx.createLinearGradient(0, 0, size, size);
+            gradient.addColorStop(0, '#667eea');
+            gradient.addColorStop(1, '#764ba2');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, size, size);
+            
+            // Draw "B" letter
+            ctx.fillStyle = 'white';
+            ctx.font = `bold ${size * 0.6}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('B', size / 2, size / 2);
+            
+            // Border
+            ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+            ctx.lineWidth = size * 0.05;
+            ctx.strokeRect(0, 0, size, size);
+        }
+
+        function generateIcons() {
+            const container = document.getElementById('iconContainer');
+            container.innerHTML = '<h2>Generated Icons (Right-click to save):</h2>';
+            
+            const sizes = [
+                { size: 16, name: 'icon16.png' },
+                { size: 48, name: 'icon48.png' },
+                { size: 128, name: 'icon128.png' }
+            ];
+            
+            sizes.forEach(({ size, name }) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                canvas.title = `Right-click and save as: ${name}`;
+                
+                drawIcon(canvas, size);
+                
+                const label = document.createElement('div');
+                label.textContent = `${size}x${size} - ${name}`;
+                label.style.display = 'inline-block';
+                label.style.textAlign = 'center';
+                label.style.margin = '10px';
+                
+                const wrapper = document.createElement('div');
+                wrapper.style.display = 'inline-block';
+                wrapper.style.margin = '10px';
+                wrapper.style.textAlign = 'center';
+                
+                wrapper.appendChild(canvas);
+                wrapper.appendChild(label);
+                container.appendChild(wrapper);
+                
+                // Add click to download
+                canvas.onclick = () => downloadIcon(canvas, name);
+            });
+        }
+
+        function downloadIcon(canvas, filename) {
+            const link = document.createElement('a');
+            link.download = filename;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+        }
+
+        function downloadAll() {
+            generateIcons();
+            
+            setTimeout(() => {
+                const canvases = document.querySelectorAll('canvas');
+                const names = ['icon16.png', 'icon48.png', 'icon128.png'];
+                
+                canvases.forEach((canvas, index) => {
+                    setTimeout(() => {
+                        downloadIcon(canvas, names[index]);
+                    }, index * 500);
+                });
+            }, 100);
+        }
+
+        // Auto-generate on load
+        window.onload = generateIcons;
+    </script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTTP History - BurpLite</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .toolbar {
+            background: white;
+            padding: 12px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+
+        .filter-input {
+            padding: 8px 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 13px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+        }
+
+        .history-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .history-item:hover {
+            background: #f8f8f8;
+        }
+
+        .history-item.selected {
+            background: #e8eaf6;
+            border-left: 3px solid #667eea;
+        }
+
+        .history-item .method {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .method.GET { background: #4ade80; color: white; }
+        .method.POST { background: #fb923c; color: white; }
+        .method.PUT { background: #60a5fa; color: white; }
+        .method.DELETE { background: #f87171; color: white; }
+        .method.PATCH { background: #a78bfa; color: white; }
+
+        .history-item .url {
+            font-size: 13px;
+            color: #333;
+            display: block;
+            margin: 4px 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .history-item .meta {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .status.success { background: #d1fae5; color: #065f46; }
+        .status.redirect { background: #fed7aa; color: #92400e; }
+        .status.client-error { background: #fecaca; color: #991b1b; }
+        .status.server-error { background: #fca5a5; color: #7f1d1d; }
+
+        .detail-panel {
+            flex: 1;
+            overflow-y: auto;
+            background: white;
+            padding: 20px;
+        }
+
+        .detail-section {
+            margin-bottom: 25px;
+        }
+
+        .detail-section h3 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 5px;
+        }
+
+        .detail-content {
+            background: #f8f8f8;
+            padding: 12px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .header-item {
+            padding: 4px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .header-name {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .empty-state .icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-left: auto;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 HTTP/HTTPS History</h1>
+    </div>
+
+    <div class="toolbar">
+        <input type="text" id="filterInput" class="filter-input" placeholder="Filter by URL, method, or status...">
+        <button class="btn btn-secondary" id="exportBtn">📥 Export</button>
+        <button class="btn btn-danger" id="clearBtn">🗑️ Clear All</button>
+        <div class="stats">
+            <span id="totalCount">Total: 0</span>
+            <span id="filteredCount"></span>
+        </div>
+    </div>
+
+    <div class="content-area">
+        <div class="history-list" id="historyList">
+            <div class="empty-state">
+                <div class="icon">🌐</div>
+                <h3>No HTTP Traffic Captured Yet</h3>
+                <p>Browse the web to see HTTP/HTTPS requests appear here</p>
+            </div>
+        </div>
+
+        <div class="detail-panel" id="detailPanel">
+            <div class="empty-state">
+                <div class="icon">👈</div>
+                <h3>Select a Request</h3>
+                <p>Click on any request from the list to view details</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="history.js"></script>
+</body>
+</html>

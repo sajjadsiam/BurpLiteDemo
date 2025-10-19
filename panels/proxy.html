@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proxy Intercept - BurpLite</title>
+    <link rel="stylesheet" href="../styles/main.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .intercept-toggle {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toggle-btn {
+            padding: 10px 20px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn.active {
+            background: white;
+            color: #667eea;
+        }
+
+        .control-panel {
+            background: white;
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .filter-box {
+            flex: 1;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-box input {
+            flex: 1;
+            padding: 8px 12px;
+            border: 1px solid #d0d0d0;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+
+        .filter-box label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .content-area {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        .request-list {
+            width: 50%;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            overflow-y: auto;
+        }
+
+        .request-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .request-item:hover {
+            background: #f8f8f8;
+        }
+
+        .request-item.selected {
+            background: #e8eaf6;
+            border-left: 3px solid #667eea;
+        }
+
+        .request-item .method {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+
+        .method.GET { background: #4ade80; color: white; }
+        .method.POST { background: #fb923c; color: white; }
+        .method.PUT { background: #60a5fa; color: white; }
+        .method.DELETE { background: #f87171; color: white; }
+
+        .request-item .url {
+            font-size: 13px;
+            color: #333;
+            margin: 4px 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .request-item .time {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .detail-panel {
+            flex: 1;
+            background: #f8f8f8;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .detail-section {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .detail-section h3 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .detail-content {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            background: #f8f8f8;
+            padding: 15px;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            background: #d0d0d0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🛡️ Proxy Intercept</h1>
+        <div class="intercept-toggle">
+            <span id="statusText">Intercept is OFF</span>
+            <button class="toggle-btn" id="toggleIntercept">Enable Intercept</button>
+        </div>
+    </div>
+
+    <div class="control-panel">
+        <div class="filter-box">
+            <input type="text" id="filterInput" placeholder="Filter by URL or method...">
+            <label>
+                <input type="checkbox" id="showOnlyIntercepted">
+                Show only intercepted
+            </label>
+        </div>
+        <div class="stats">
+            <span id="totalCount">Total: 0</span>
+        </div>
+        <button class="btn btn-danger" id="clearBtn">🗑️ Clear All</button>
+    </div>
+
+    <div class="content-area">
+        <div class="request-list" id="requestList">
+            <div class="empty-state">
+                <div style="font-size: 64px; margin-bottom: 20px;">🛡️</div>
+                <h3>No Requests Captured</h3>
+                <p>Enable intercept and browse the web to see requests</p>
+            </div>
+        </div>
+
+        <div class="detail-panel" id="detailPanel">
+            <div class="empty-state">
+                <div style="font-size: 64px; margin-bottom: 20px;">👈</div>
+                <h3>Select a Request</h3>
+                <p>Click on any request to view details</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="proxy.js"></script>
+</body>
+</html>

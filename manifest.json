@@ -1,0 +1,29 @@
+{
+  "manifest_version": 3,
+  "name": "BurpLite - Security Testing Suite",
+  "version": "1.0.0",
+  "description": "Professional Burp Suite-like security testing tools: Repeater, Intruder, Proxy Intercept, Decoder & HTTP History",
+  "permissions": [
+    "webRequest",
+    "storage",
+    "activeTab",
+    "tabs",
+    "webNavigation"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "BurpLite Security Tools"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["panels/*.html", "styles/*.css"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
