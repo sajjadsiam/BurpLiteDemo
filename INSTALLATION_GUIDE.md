@@ -1,3 +1,4 @@
+
 # 🎯 Complete Installation & Usage Guide
 
 ## 📋 Table of Contents
@@ -863,21 +864,21 @@ Found: %48%65%6C%6C%6F
 
 ## 🎓 Learning Path
 
-### Beginner (Week 1)
+### Beginner 
 - [ ] Install extension
 - [ ] Test HTTP History
 - [ ] Simple GET in Repeater
 - [ ] Basic Base64 encoding
 - [ ] Test with httpbin.org
 
-### Intermediate (Week 2-3)
+### Intermediate 
 - [ ] POST requests with JSON
 - [ ] Add custom headers
 - [ ] Simple Intruder attacks
 - [ ] Filter HTTP History
 - [ ] Try all encoders
 
-### Advanced (Week 4+)
+### Advanced 
 - [ ] Complex Intruder attacks
 - [ ] Chained encodings
 - [ ] Custom payload lists
@@ -888,14 +889,9 @@ Found: %48%65%6C%6C%6F
 
 ## 📞 Need More Help?
 
-Check these resources:
-- **QUICKSTART.md** - Fast 5-minute guide
-- **README.md** - Full feature documentation
-- **TROUBLESHOOTING.md** - Common issues
-- **VISUAL_GUIDE.md** - UI walkthroughs
-
 ---
 
 **Happy Testing! 🔒**
 
 *Remember: With great power comes great responsibility. Always test ethically and legally.*
+
